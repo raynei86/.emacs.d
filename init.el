@@ -27,12 +27,12 @@
                          ("elpa" . "https://elpa.gnu.org/packages/")
 			 ("nongnu". "https://elpa.nongnu.org/nongnu/")))
 
-(package-initialize)
-(unless package-archive-contents
-  (package-refresh-contents))
-
-(require 'use-package)
-(setq use-package-always-ensure t)
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+(eval-and-compile
+  (setq use-package-always-ensure t
+        use-package-expand-minimally t))
 
 (use-package solarized-theme
   :config (load-theme 'solarized-light))

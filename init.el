@@ -8,10 +8,15 @@
 (global-set-key (kbd "C--") 'text-scale-decrease)
 (global-set-key (kbd "C-=") 'text-scale-increase)
 
+(global-set-key (kbd "C-s") 'isearch-forward-regexp)
+(global-set-key (kbd "C-r") 'isearch-backward-regexp)
+(global-set-key (kbd "M-z") 'zap-up-to-char) ; I think this just makes more sense
+
 (global-display-line-numbers-mode 1)
 (electric-pair-mode 1)
 (auto-fill-mode 1)
 (show-paren-mode 1)
+(delete-selection-mode 1)
 
 (setq use-dialog-box nil)
 (setq ring-bell-function 'ignore)
@@ -22,17 +27,16 @@
 			       version-control t))
 
 (require 'package)
-
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                          ("elpa" . "https://elpa.gnu.org/packages/")
 			 ("nongnu". "https://elpa.nongnu.org/nongnu/")))
 
-(package-initialize)
-(unless package-archive-contents
-  (package-refresh-contents))
-
-(require 'use-package)
-(setq use-package-always-ensure t)
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+(eval-and-compile
+  (setq use-package-always-ensure t
+        use-package-expand-minimally t))
 
 (use-package solarized-theme
   :config (load-theme 'solarized-light))
@@ -72,9 +76,7 @@
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
   (add-to-list 'completion-at-point-functions #'cape-file)
   (add-to-list 'completion-at-point-functions #'cape-keyword))
-(setq-local completion-at-point-functions
-	    (mapcar #'cape-company-to-capf
-		    (list #'company-etags)))
+
 
 (use-package vertico
   :init

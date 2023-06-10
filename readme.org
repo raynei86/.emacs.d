@@ -1,7 +1,7 @@
 * Raynei's Emacs config
 Proof of my wasted hours on a relic older than my parents.
 
-** TODO Refactoring
-- [ ] Literate config 
+** TODO Refactoring [0/3]
+- [X] Literate config 
 - [ ] Modularize the code
 - [ ] Make it look less messy in general

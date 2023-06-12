@@ -143,13 +143,14 @@ As an emacs hacker, I only use the coolest l33t hacker font.
  org-hide-emphasis-markers t
 )
 
+(load-file "~/.config/emacs/private.el")
 (use-package circe)
 (setq circe-network-options
       '(("Libera Chat"
          :tls t
          :nick "raynei"
          :sasl-username "raynei"
-         :sasl-password "***REMOVED***"
+         :sasl-password libera-password
          :channels ("#emacs")
          )))
 #+end_src

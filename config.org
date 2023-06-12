@@ -20,13 +20,15 @@ As an emacs hacker, I only use the coolest l33t hacker font.
 (global-set-key (kbd "C--") 'text-scale-decrease)
 (global-set-key (kbd "C-=") 'text-scale-increase)
 #+end_src
-
+* Rest
 #+begin_src emacs-lisp
 (global-display-line-numbers-mode 1)
 (electric-pair-mode 1)
 (auto-fill-mode 1)
 (show-paren-mode 1)
 (delete-selection-mode 1)
+(toggle-frame-maximized)
+(add-hook 'text-mode-hook 'visual-line-mode)
 
 (setq use-dialog-box nil)
 (setq ring-bell-function 'ignore)
@@ -36,6 +38,7 @@ As an emacs hacker, I only use the coolest l33t hacker font.
 (setq backup-directory-alist '(("." . "~/.config/emacs/backup/")
 			       version-control t))
 (setq create-lockfiles nil)
+
 
 (require 'package)
 
@@ -50,8 +53,11 @@ As an emacs hacker, I only use the coolest l33t hacker font.
   (setq use-package-always-ensure t
         use-package-expand-minimally t))
 
-(use-package solarized-theme
-  :config (load-theme 'solarized-dark))
+(use-package solarized-theme)
+;; See if it's after 18:00 and use light theme if not
+(if (> (string-to-number (format-time-string "%H")) 18)
+    (load-theme 'solarized-dark-high-contrast)
+  (load-theme 'solarized-light-high-contrast))
 
 (defvar light-or-dark nil)
 (defun toggle-theme ()
@@ -60,12 +66,12 @@ As an emacs hacker, I only use the coolest l33t hacker font.
   (cond
    (light-or-dark
     (setq light-or-dark nil)
-    (disable-theme 'solarized-light)
-    (load-theme 'solarized-dark))
+    (disable-theme 'solarized-light-high-contrast)
+    (load-theme 'solarized-dark-high-contrast))
    (t
     (setq light-or-dark t)
-    (disable-theme 'solarized-dark)
-    (load-theme 'solarized-light))))
+    (disable-theme 'solarized-dark-high-contrast)
+    (load-theme 'solarized-light-high-contrast))))
 
 
 (use-package modern-cpp-font-lock
@@ -133,13 +139,9 @@ As an emacs hacker, I only use the coolest l33t hacker font.
  org-auto-align-tags nil
  org-tags-column 0
  org-catch-invisible-edits 'show-and-error
- org-special-ctrl-a/e t
  org-insert-heading-respect-content t
  org-hide-emphasis-markers t
- org-pretty-entities t
- org-ellipsis "…"
- )
-(put 'downcase-region 'disabled nil)
+)
 
 (use-package circe)
 (setq circe-network-options

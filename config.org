@@ -143,17 +143,27 @@ As an emacs hacker, I only use the coolest l33t hacker font.
    org-hide-emphasis-markers t
   )
 
-  (load-file "~/.config/emacs/private.el")
-  (use-package circe)
-  (setq circe-network-options
-	'(("Libera Chat"
-	   :tls t
-	   :nick "raynei"
-	   :sasl-username "raynei"
-	   :sasl-password libera-password
-	   :channels ("#emacs")
-	   )))
+(load-file "~/.config/emacs/private.el")
+(use-package circe)
+(setq circe-network-options
+      '(("Libera Chat"
+         :tls t
+         :nick "raynei"
+         :sasl-username "raynei"
+         :sasl-password libera-password
+         :channels ("#emacs")
+         )))
 
-  (use-package multiple-cursors)
-  ((global-set-key (kbd "C-S-c") 'mc/edit-lines))
+(use-package multiple-cursors)
+(global-set-key (kbd "C-S-c") 'mc/edit-lines)
+
+
+(setq
+mu4e-sent-folder "/Gmail/[gmail].sent"
+mu4e-drafts-folder "/Gmail/[gmail].drafts"
+mu4e-trash-folder "/Gmail/[gmail].trash"
+mu4e-refile-folder "/Gmail/[gmail].important"
+mu4e-get-mail-command "offlineimap"
+mu4e-update-interval 1200
+)
 #+end_src

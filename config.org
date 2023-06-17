@@ -22,126 +22,126 @@ As an emacs hacker, I only use the coolest l33t hacker font.
 #+end_src
 * Rest
 #+begin_src emacs-lisp
-  (global-display-line-numbers-mode 1)
-  (electric-pair-mode 1)
-  (auto-fill-mode 1)
-  (show-paren-mode 1)
-  (delete-selection-mode 1)
-  (toggle-frame-maximized)
-  (add-hook 'text-mode-hook 'visual-line-mode)
+(global-display-line-numbers-mode 1)
+(electric-pair-mode 1)
+(auto-fill-mode 1)
+(show-paren-mode 1)
+(delete-selection-mode 1)
+(toggle-frame-maximized)
+(add-hook 'text-mode-hook 'visual-line-mode)
 
-  (setq use-dialog-box nil)
-  (setq ring-bell-function 'ignore)
+(setq use-dialog-box nil)
+(setq ring-bell-function 'ignore)
 
-  (setq custom-file (locate-user-emacs-file "custom-vars.el"))
-  (load custom-file 'noerror 'nomessage)
-  (setq backup-directory-alist '(("." . "~/.config/emacs/backup/")
-				 version-control t))
-  (setq create-lockfiles nil)
-
-
-  (require 'package)
-
-  (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			   ("elpa" . "https://elpa.gnu.org/packages/")
-			   ("nongnu". "https://elpa.nongnu.org/nongnu/")))
-
-  (unless (package-installed-p 'use-package)
-    (package-refresh-contents)
-    (package-install 'use-package))
-  (eval-and-compile
-    (setq use-package-always-ensure t
-	  use-package-expand-minimally t))
-
-  (use-package solarized-theme)
-  ;; See if it's after 18:00 and use light theme if not
-  (if (> (string-to-number (format-time-string "%H")) 18)
-      (load-theme 'solarized-dark-high-contrast)
-    (load-theme 'solarized-light-high-contrast))
-
-  (defvar light-or-dark nil)
-  (defun toggle-theme ()
-    "Toggle between dark and light theme"
-    (interactive)
-    (cond
-     (light-or-dark
-      (setq light-or-dark nil)
-      (disable-theme 'solarized-light-high-contrast)
-      (load-theme 'solarized-dark-high-contrast))
-     (t
-      (setq light-or-dark t)
-      (disable-theme 'solarized-dark-high-contrast)
-      (load-theme 'solarized-light-high-contrast))))
+(setq custom-file (locate-user-emacs-file "custom-vars.el"))
+(load custom-file 'noerror 'nomessage)
+(setq backup-directory-alist '(("." . "~/.config/emacs/backup/")
+			       version-control t))
+(setq create-lockfiles nil)
 
 
-  (use-package modern-cpp-font-lock
-    :hook
-    (c++-mode . modern-c++-font-lock-mode))
+(require 'package)
 
-  (use-package nim-mode)
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+			 ("elpa" . "https://elpa.gnu.org/packages/")
+			 ("nongnu". "https://elpa.nongnu.org/nongnu/")))
 
-  (use-package corfu
-    :custom
-    (corfu-cycle t)
-    (corfu-auto t)
-    (corfu-preselect 'prompt)
-    (corfu-quit-no-match 'separator)
-    :init
-    (global-corfu-mode))
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+(eval-and-compile
+  (setq use-package-always-ensure t
+	use-package-expand-minimally t))
 
-  (use-package cape
-    :init
-    (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-    (add-to-list 'completion-at-point-functions #'cape-file)
-    (add-to-list 'completion-at-point-functions #'cape-keyword))
-  (setq-local completion-at-point-functions
-	      (mapcar #'cape-company-to-capf
-		      (list #'company-etags)))
+(use-package solarized-theme)
+;; See if it's after 18:00 and use light theme if not
+(if (> (string-to-number (format-time-string "%H")) 18)
+    (load-theme 'solarized-dark-high-contrast)
+  (load-theme 'solarized-light-high-contrast))
 
-  (use-package vertico
-    :init
-    (vertico-mode))
-
-  (use-package marginalia
-    :init
-    (marginalia-mode))
-
-  (use-package orderless
-    :init
-    (setq completion-styles '(orderless basic)
-	  completion-category-defaults nil
-	  completion-category-overrides '((file (styles partial-completion)))))
-
-  (use-package consult
-    :hook (completion-list-mode . consult-preview-at-point-mode)
-    :init (setq xref-show-xrefs-function #'consult-xref
-		xref-show-definitions-function #'consult-xref))
+(defvar light-or-dark nil)
+(defun toggle-theme ()
+  "Toggle between dark and light theme"
+  (interactive)
+  (cond
+   (light-or-dark
+    (setq light-or-dark nil)
+    (disable-theme 'solarized-light-high-contrast)
+    (load-theme 'solarized-dark-high-contrast))
+   (t
+    (setq light-or-dark t)
+    (disable-theme 'solarized-dark-high-contrast)
+    (load-theme 'solarized-light-high-contrast))))
 
 
-  (use-package helpful
-    :custom
-    (counsel-describe-function-function #'helpful-callable)
-    (counsel-describe-variable-function #'helpful-variable)
-    :bind
-    ([remap describe-function] . counsel-describe-function)
-    ([remap describe-command] . helpful-command)
-    ([remap describe-variable] . counsel-describe-variable)
-    ([remap describe-key] . helpful-key))
+(use-package modern-cpp-font-lock
+  :hook
+  (c++-mode . modern-c++-font-lock-mode))
 
-  (use-package magit
-    :config
-    (setq transient-default-level 5))
+(use-package nim-mode)
 
-  (use-package org-journal)
-  (use-package ox-pandoc)
+(use-package corfu
+  :custom
+  (corfu-cycle t)
+  (corfu-auto t)
+  (corfu-preselect 'prompt)
+  (corfu-quit-no-match 'separator)
+  :init
+  (global-corfu-mode))
 
-  (setq
-   org-auto-align-tags nil
-   org-tags-column 0
-   org-catch-invisible-edits 'show-and-error
-   org-insert-heading-respect-content t
-   org-hide-emphasis-markers t
-  )
+(use-package cape
+  :init
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-keyword))
+(setq-local completion-at-point-functions
+	    (mapcar #'cape-company-to-capf
+		    (list #'company-etags)))
+
+(use-package vertico
+  :init
+  (vertico-mode))
+
+(use-package marginalia
+  :init
+  (marginalia-mode))
+
+(use-package orderless
+  :init
+  (setq completion-styles '(orderless basic)
+	completion-category-defaults nil
+	completion-category-overrides '((file (styles partial-completion)))))
+
+(use-package consult
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+  :init (setq xref-show-xrefs-function #'consult-xref
+	      xref-show-definitions-function #'consult-xref))
+
+
+(use-package helpful
+  :custom
+  (counsel-describe-function-function #'helpful-callable)
+  (counsel-describe-variable-function #'helpful-variable)
+  :bind
+  ([remap describe-function] . counsel-describe-function)
+  ([remap describe-command] . helpful-command)
+  ([remap describe-variable] . counsel-describe-variable)
+  ([remap describe-key] . helpful-key))
+
+(use-package magit
+  :config
+  (setq transient-default-level 5))
+
+(use-package org-journal)
+(use-package ox-pandoc)
+
+(setq
+ org-auto-align-tags nil
+ org-tags-column 0
+ org-catch-invisible-edits 'show-and-error
+ org-insert-heading-respect-content t
+ org-hide-emphasis-markers t
+ )
 
 (load-file "~/.config/emacs/private.el")
 (use-package circe)
@@ -159,11 +159,11 @@ As an emacs hacker, I only use the coolest l33t hacker font.
 
 
 (setq
-mu4e-sent-folder "/Gmail/[gmail].sent"
-mu4e-drafts-folder "/Gmail/[gmail].drafts"
-mu4e-trash-folder "/Gmail/[gmail].trash"
-mu4e-refile-folder "/Gmail/[gmail].important"
-mu4e-get-mail-command "offlineimap"
-mu4e-update-interval 1200
-)
+ mu4e-sent-folder "/Gmail/[gmail].sent"
+ mu4e-drafts-folder "/Gmail/[gmail].drafts"
+ mu4e-trash-folder "/Gmail/[gmail].trash"
+ mu4e-refile-folder "/Gmail/[gmail].important"
+ mu4e-get-mail-command "offlineimap"
+ mu4e-update-interval 1200
+ )
 #+end_src

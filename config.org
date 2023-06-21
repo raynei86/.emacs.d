@@ -138,14 +138,9 @@ As an emacs hacker, I only use the coolest l33t hacker font.
     :config
     (setq transient-default-level 5))
 
-<<<<<<< HEAD
-  (use-package org-journal)
-  (use-package ox-pandoc)
-=======
 (use-package org-journal)
 (use-package ox-pandoc)
 (use-package pdf-tools)
->>>>>>> 2d174d8 (Theme changes, pdf-tools)
 
   (setq
    org-auto-align-tags nil
@@ -169,8 +164,6 @@ As an emacs hacker, I only use the coolest l33t hacker font.
   (use-package multiple-cursors)
   (global-set-key (kbd "C-S-c") 'mc/edit-lines)
 
-<<<<<<< HEAD
-
   (setq
    mu4e-sent-folder "/Gmail/[gmail].sent"
    mu4e-drafts-folder "/Gmail/[gmail].drafts"
@@ -186,14 +179,4 @@ As an emacs hacker, I only use the coolest l33t hacker font.
    '("^\\*Dictionary\\*" display-buffer-in-side-window
      (side . bottom)
      (window-width . 50)))
-=======
-(setq
- mu4e-sent-folder "/Gmail/[gmail].sent"
- mu4e-drafts-folder "/Gmail/[gmail].drafts"
- mu4e-trash-folder "/Gmail/[gmail].trash"
- mu4e-refile-folder "/Gmail/[gmail].important"
- mu4e-get-mail-command "offlineimap"
- mu4e-update-interval 1200
- )
->>>>>>> 2d174d8 (Theme changes, pdf-tools)
 #+end_src

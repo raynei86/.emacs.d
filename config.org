@@ -22,13 +22,13 @@ As an emacs hacker, I only use the coolest l33t hacker font.
 #+end_src
 * Rest
 #+begin_src emacs-lisp
-  (global-display-line-numbers-mode 1)
-  (electric-pair-mode 1)
-  (auto-fill-mode 1)
-  (show-paren-mode 1)
-  (delete-selection-mode 1)
-  (toggle-frame-maximized)
-  (add-hook 'text-mode-hook 'visual-line-mode)
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+(electric-pair-mode 1)
+(auto-fill-mode 1)
+(show-paren-mode 1)
+(delete-selection-mode 1)
+(toggle-frame-maximized)
+(add-hook 'text-mode-hook 'visual-line-mode)
 
   (setq use-dialog-box nil)
   (setq ring-bell-function 'ignore)
@@ -53,26 +53,32 @@ As an emacs hacker, I only use the coolest l33t hacker font.
     (setq use-package-always-ensure t
 	  use-package-expand-minimally t))
 
-  (use-package solarized-theme)
-  ;; See if it's after 18:00 and use light theme if not
-  (if (> (string-to-number (format-time-string "%H")) 18)
-      (load-theme 'solarized-dark-high-contrast)
-    (load-theme 'solarized-light-high-contrast))
+;; Advise load-theme to disable previous themes when loading themes
+(defadvice load-theme (before theme-dont-propagate activate)
+ (mapcar #'disable-theme custom-enabled-themes))
 
-  (defvar light-or-dark nil)
-  (defun toggle-theme ()
-    "Toggle between dark and light theme"
-    (interactive)
-    (cond
-     (light-or-dark
-      (setq light-or-dark nil)
-      (disable-theme 'solarized-light-high-contrast)
-      (load-theme 'solarized-dark-high-contrast))
-     (t
-      (setq light-or-dark t)
-      (disable-theme 'solarized-dark-high-contrast)
-      (load-theme 'solarized-light-high-contrast))))
+(use-package solarized-theme)
+;; See if it's after 18:00 and use light theme if not
+(defvar night-or-not (if (> (string-to-number (format-time-string "%H")) 18) true nil))
 
+(defvar light-or-dark custom-enabled-themes)
+(defun toggle-theme ()
+  "Toggle between dark and light theme"
+  (interactive)
+  (cond
+   (light-or-dark
+    (setq light-or-dark nil)
+    (load-theme 'solarized-dark-high-contrast))
+   (t
+    (setq light-or-dark t)
+    (load-theme 'solarized-light-high-contrast))))
+
+(defun change-time-theme ()
+  "Toggle between dark and light theme based on time"
+  (interactive)
+  (cond
+   ('night-or-not (load-theme 'solarized-light-high-contrast))
+   (t (load-theme 'solarized-dark-high-contrast))))
 
   (use-package modern-cpp-font-lock
     :hook
@@ -132,8 +138,14 @@ As an emacs hacker, I only use the coolest l33t hacker font.
     :config
     (setq transient-default-level 5))
 
+<<<<<<< HEAD
   (use-package org-journal)
   (use-package ox-pandoc)
+=======
+(use-package org-journal)
+(use-package ox-pandoc)
+(use-package pdf-tools)
+>>>>>>> 2d174d8 (Theme changes, pdf-tools)
 
   (setq
    org-auto-align-tags nil
@@ -157,6 +169,7 @@ As an emacs hacker, I only use the coolest l33t hacker font.
   (use-package multiple-cursors)
   (global-set-key (kbd "C-S-c") 'mc/edit-lines)
 
+<<<<<<< HEAD
 
   (setq
    mu4e-sent-folder "/Gmail/[gmail].sent"
@@ -173,4 +186,14 @@ As an emacs hacker, I only use the coolest l33t hacker font.
    '("^\\*Dictionary\\*" display-buffer-in-side-window
      (side . bottom)
      (window-width . 50)))
+=======
+(setq
+ mu4e-sent-folder "/Gmail/[gmail].sent"
+ mu4e-drafts-folder "/Gmail/[gmail].drafts"
+ mu4e-trash-folder "/Gmail/[gmail].trash"
+ mu4e-refile-folder "/Gmail/[gmail].important"
+ mu4e-get-mail-command "offlineimap"
+ mu4e-update-interval 1200
+ )
+>>>>>>> 2d174d8 (Theme changes, pdf-tools)
 #+end_src

@@ -22,161 +22,162 @@ As an emacs hacker, I only use the coolest l33t hacker font.
 #+end_src
 * Rest
 #+begin_src emacs-lisp
-(add-hook 'prog-mode-hook 'display-line-numbers-mode)
-(electric-pair-mode 1)
-(auto-fill-mode 1)
-(show-paren-mode 1)
-(delete-selection-mode 1)
-(toggle-frame-maximized)
-(add-hook 'text-mode-hook 'visual-line-mode)
+  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+  (electric-pair-mode 1)
+  (auto-fill-mode 1)
+  (show-paren-mode 1)
+  (delete-selection-mode 1)
+  (toggle-frame-maximized)
+  (add-hook 'text-mode-hook 'visual-line-mode)
 
-  (setq use-dialog-box nil)
-  (setq ring-bell-function 'ignore)
+    (setq use-dialog-box nil)
+    (setq ring-bell-function 'ignore)
 
-  (setq custom-file (locate-user-emacs-file "custom-vars.el"))
-  (load custom-file 'noerror 'nomessage)
-  (setq backup-directory-alist '(("." . "~/.config/emacs/backup/")
-				 version-control t))
-  (setq create-lockfiles nil)
-
-
-  (require 'package)
-
-  (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			   ("elpa" . "https://elpa.gnu.org/packages/")
-			   ("nongnu". "https://elpa.nongnu.org/nongnu/")))
-
-  (unless (package-installed-p 'use-package)
-    (package-refresh-contents)
-    (package-install 'use-package))
-  (eval-and-compile
-    (setq use-package-always-ensure t
-	  use-package-expand-minimally t))
-
-;; Advise load-theme to disable previous themes when loading themes
-(defadvice load-theme (before theme-dont-propagate activate)
- (mapcar #'disable-theme custom-enabled-themes))
-
-(use-package solarized-theme)
-;; See if it's after 18:00 and use light theme if not
-(defvar night-or-not (if (> (string-to-number (format-time-string "%H")) 18) true nil))
-
-(defvar light-or-dark custom-enabled-themes)
-(defun toggle-theme ()
-  "Toggle between dark and light theme"
-  (interactive)
-  (cond
-   (light-or-dark
-    (setq light-or-dark nil)
-    (load-theme 'solarized-dark-high-contrast))
-   (t
-    (setq light-or-dark t)
-    (load-theme 'solarized-light-high-contrast))))
-
-(defun change-time-theme ()
-  "Toggle between dark and light theme based on time"
-  (interactive)
-  (cond
-   ('night-or-not (load-theme 'solarized-light-high-contrast))
-   (t (load-theme 'solarized-dark-high-contrast))))
-
-  (use-package modern-cpp-font-lock
-    :hook
-    (c++-mode . modern-c++-font-lock-mode))
-
-  (use-package nim-mode)
-
-  (use-package corfu
-    :custom
-    (corfu-cycle t)
-    (corfu-auto t)
-    (corfu-preselect 'prompt)
-    (corfu-quit-no-match 'separator)
-    :init
-    (global-corfu-mode))
-
-  (use-package cape
-    :init
-    (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-    (add-to-list 'completion-at-point-functions #'cape-file)
-    (add-to-list 'completion-at-point-functions #'cape-keyword))
-  (setq-local completion-at-point-functions
-	      (mapcar #'cape-company-to-capf
-		      (list #'company-etags)))
-
-  (use-package vertico
-    :init
-    (vertico-mode))
-
-  (use-package marginalia
-    :init
-    (marginalia-mode))
-
-  (use-package orderless
-    :init
-    (setq completion-styles '(orderless basic)
-	  completion-category-defaults nil
-	  completion-category-overrides '((file (styles partial-completion)))))
-
-  (use-package consult
-    :hook (completion-list-mode . consult-preview-at-point-mode)
-    :init (setq xref-show-xrefs-function #'consult-xref
-		xref-show-definitions-function #'consult-xref))
+    (setq custom-file (locate-user-emacs-file "custom-vars.el"))
+    (load custom-file 'noerror 'nomessage)
+    (setq backup-directory-alist '(("." . "~/.config/emacs/backup/")
+				   version-control t))
+    (setq create-lockfiles nil)
 
 
-  (use-package helpful
-    :custom
-    (counsel-describe-function-function #'helpful-callable)
-    (counsel-describe-variable-function #'helpful-variable)
-    :bind
-    ([remap describe-function] . counsel-describe-function)
-    ([remap describe-command] . helpful-command)
-    ([remap describe-variable] . counsel-describe-variable)
-    ([remap describe-key] . helpful-key))
+    (require 'package)
 
-  (use-package magit
-    :config
-    (setq transient-default-level 5))
+    (setq package-archives '(("melpa" . "https://melpa.org/packages/")
+			     ("elpa" . "https://elpa.gnu.org/packages/")
+			     ("nongnu". "https://elpa.nongnu.org/nongnu/")))
 
-(use-package org-journal)
-(use-package ox-pandoc)
-(use-package pdf-tools)
+    (unless (package-installed-p 'use-package)
+      (package-refresh-contents)
+      (package-install 'use-package))
+    (eval-and-compile
+      (setq use-package-always-ensure t
+	    use-package-expand-minimally t))
 
+  ;; Advise load-theme to disable previous themes when loading themes
+  (defadvice load-theme (before theme-dont-propagate activate)
+   (mapcar #'disable-theme custom-enabled-themes))
+
+  (use-package solarized-theme)
+  ;; See if it's after 18:00 and use light theme if not
+  (defvar night-or-not (if (> (string-to-number (format-time-string "%H")) 18) true nil))
+
+  (defvar light-or-dark custom-enabled-themes)
+  (defun toggle-theme ()
+    "Toggle between dark and light theme"
+    (interactive)
+    (cond
+     (light-or-dark
+      (setq light-or-dark nil)
+      (load-theme 'solarized-dark-high-contrast))
+     (t
+      (setq light-or-dark t)
+      (load-theme 'solarized-light-high-contrast))))
+
+  (defun change-time-theme ()
+    "Toggle between dark and light theme based on time"
+    (interactive)
+    (cond
+     ('night-or-not (load-theme 'solarized-light-high-contrast))
+     (t (load-theme 'solarized-dark-high-contrast))))
+  (change-time-theme)
+
+    (use-package modern-cpp-font-lock
+      :hook
+      (c++-mode . modern-c++-font-lock-mode))
+
+    (use-package nim-mode)
+
+    (use-package corfu
+      :custom
+      (corfu-cycle t)
+      (corfu-auto t)
+      (corfu-preselect 'prompt)
+      (corfu-quit-no-match 'separator)
+      :init
+      (global-corfu-mode))
+
+    (use-package cape
+      :init
+      (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+      (add-to-list 'completion-at-point-functions #'cape-file)
+      (add-to-list 'completion-at-point-functions #'cape-keyword))
+    (setq-local completion-at-point-functions
+		(mapcar #'cape-company-to-capf
+			(list #'company-etags)))
+
+    (use-package vertico
+      :init
+      (vertico-mode))
+
+    (use-package marginalia
+      :init
+      (marginalia-mode))
+
+    (use-package orderless
+      :init
+      (setq completion-styles '(orderless basic)
+	    completion-category-defaults nil
+	    completion-category-overrides '((file (styles partial-completion)))))
+
+    (use-package consult
+      :hook (completion-list-mode . consult-preview-at-point-mode)
+      :init (setq xref-show-xrefs-function #'consult-xref
+		  xref-show-definitions-function #'consult-xref))
+
+
+    (use-package helpful
+      :custom
+      (counsel-describe-function-function #'helpful-callable)
+      (counsel-describe-variable-function #'helpful-variable)
+      :bind
+      ([remap describe-function] . counsel-describe-function)
+      ([remap describe-command] . helpful-command)
+      ([remap describe-variable] . counsel-describe-variable)
+      ([remap describe-key] . helpful-key))
+
+    (use-package magit
+      :config
+      (setq transient-default-level 5))
+
+  (use-package org-journal)
+  (use-package ox-pandoc)
+  (use-package pdf-tools)
   (setq
-   org-auto-align-tags nil
-   org-tags-column 0
-   org-catch-invisible-edits 'show-and-error
-   org-insert-heading-respect-content t
-   org-hide-emphasis-markers t
-   )
+     org-auto-align-tags nil
+     org-tags-column 0
+     org-catch-invisible-edits 'show-and-error
+     org-insert-heading-respect-content t
+     org-hide-emphasis-markers t
+     org-pretty-entities t
+     )
 
-  (load-file "~/.config/emacs/private.el")
-  (use-package circe)
-  (setq circe-network-options
-	'(("Libera Chat"
-	   :tls t
-	   :nick "raynei"
-	   :sasl-username "raynei"
-	   :sasl-password libera-password
-	   :channels ("#emacs")
-	   )))
+    (load-file "~/.config/emacs/private.el")
+    (use-package circe)
+    (setq circe-network-options
+	  '(("Libera Chat"
+	     :tls t
+	     :nick "raynei"
+	     :sasl-username "raynei"
+	     :sasl-password libera-password
+	     :channels ("#emacs")
+	     )))
 
-  (use-package multiple-cursors)
-  (global-set-key (kbd "C-S-c") 'mc/edit-lines)
+    (use-package multiple-cursors)
+    (global-set-key (kbd "C-S-c") 'mc/edit-lines)
 
-  (setq
-   mu4e-sent-folder "/Gmail/[gmail].sent"
-   mu4e-drafts-folder "/Gmail/[gmail].drafts"
-   mu4e-trash-folder "/Gmail/[gmail].trash"
-   mu4e-refile-folder "/Gmail/[gmail].important"
-   mu4e-get-mail-command "offlineimap"
-   mu4e-update-interval 1200
-   )
+    (setq
+     mu4e-sent-folder "/Gmail/[gmail].sent"
+     mu4e-drafts-folder "/Gmail/[gmail].drafts"
+     mu4e-trash-folder "/Gmail/[gmail].trash"
+     mu4e-refile-folder "/Gmail/[gmail].important"
+     mu4e-get-mail-command "offlineimap"
+     mu4e-update-interval 1200
+     )
 
-  ;; Dictionary buffer should behave
-  (setq switch-to-buffer-obey-display-actions t)
-  (add-to-list 'display-buffer-alist
-   '("^\\*Dictionary\\*" display-buffer-in-side-window
-     (side . bottom)
-     (window-width . 50)))
+    ;; Dictionary buffer should behave
+    (setq switch-to-buffer-obey-display-actions t)
+    (add-to-list 'display-buffer-alist
+     '("^\\*Dictionary\\*" display-buffer-in-side-window
+       (side . bottom)
+       (window-width . 50)))
 #+end_src

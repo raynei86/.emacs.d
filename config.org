@@ -59,7 +59,7 @@ As an emacs hacker, I only use the coolest l33t hacker font.
 
   (use-package solarized-theme)
   ;; See if it's after 18:00 and use light theme if not
-  (defvar night-or-not (if (> (string-to-number (format-time-string "%H")) 18) true nil))
+  (defvar night-or-not (if (> (string-to-number (format-time-string "%H")) 18) nil 'true))
 
   (defvar light-or-dark custom-enabled-themes)
   (defun toggle-theme ()

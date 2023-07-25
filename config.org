@@ -29,6 +29,7 @@ As an emacs hacker, I only use the coolest l33t hacker font.
   (delete-selection-mode 1)
   (toggle-frame-maximized)
   (add-hook 'text-mode-hook 'visual-line-mode)
+  (load-theme 'modus-vivendi)
 
     (setq use-dialog-box nil)
     (setq ring-bell-function 'ignore)
@@ -52,25 +53,6 @@ As an emacs hacker, I only use the coolest l33t hacker font.
     (eval-and-compile
       (setq use-package-always-ensure t
 	    use-package-expand-minimally t))
-
-  ;; Advise load-theme to disable previous themes when loading themes
-  (defadvice load-theme (before theme-dont-propagate activate)
-   (mapcar #'disable-theme custom-enabled-themes))
-
-  (use-package solarized-theme
-   :config (load-theme 'solarized-dark-high-contrast))
-
-  (defvar light-or-dark custom-enabled-themes)
-  (defun toggle-theme ()
-    "Toggle between dark and light theme"
-    (interactive)
-    (cond
-     (light-or-dark
-      (setq light-or-dark nil)
-      (load-theme 'solarized-dark-high-contrast))
-     (t
-      (setq light-or-dark t)
-      (load-theme 'solarized-light-high-contrast))))
 
     (use-package modern-cpp-font-lock
       :hook
@@ -126,9 +108,9 @@ As an emacs hacker, I only use the coolest l33t hacker font.
       (counsel-describe-function-function #'helpful-callable)
       (counsel-describe-variable-function #'helpful-variable)
       :bind
-      ([remap describe-function] . counsel-describe-function)
+      ([remap describe-function] . helpful-function)
       ([remap describe-command] . helpful-command)
-      ([remap describe-variable] . counsel-describe-variable)
+      ([remap describe-variable] . helpful-variable)
       ([remap describe-key] . helpful-key))
 
     (use-package magit

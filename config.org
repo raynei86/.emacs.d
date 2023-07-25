@@ -100,8 +100,13 @@ As an emacs hacker, I only use the coolest l33t hacker font.
     (use-package consult
       :hook (completion-list-mode . consult-preview-at-point-mode)
       :init (setq xref-show-xrefs-function #'consult-xref
-		  xref-show-definitions-function #'consult-xref))
-
+		  xref-show-definitions-function #'consult-xref)
+      :bind
+      ([remap isearch-forward] . consult-line)
+      ([remap switch-to-buffer] . consult-buffer)
+      ([remap goto-line] . consult-goto-line)
+      ([remap man] . consult-man)
+      )
 
     (use-package helpful
       :custom
@@ -116,6 +121,8 @@ As an emacs hacker, I only use the coolest l33t hacker font.
     (use-package magit
       :config
       (setq transient-default-level 5))
+
+  (use-package eat)
 
   (use-package org-journal)
   (use-package ox-pandoc)

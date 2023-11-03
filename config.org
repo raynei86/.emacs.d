@@ -22,147 +22,143 @@ As an emacs hacker, I only use the coolest l33t hacker font.
 #+end_src
 * Rest
 #+begin_src emacs-lisp
-  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
-  (electric-pair-mode 1)
-  (auto-fill-mode 1)
-  (show-paren-mode 1)
-  (delete-selection-mode 1)
-  (toggle-frame-maximized)
-  (add-hook 'text-mode-hook 'visual-line-mode)
-  (load-theme 'modus-vivendi)
+(eval-and-compile
+  (customize-set-variable
+   'package-archives '(("melpa" . "https://melpa.org/packages/")
+                       ("gnu" . "https://elpa.gnu.org/packages/")
+                       ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
+  (package-initialize)
+  (unless (package-installed-p 'leaf)
+    (package-refresh-contents)
+    (package-install 'leaf))
 
-    (setq use-dialog-box nil)
-    (setq ring-bell-function 'ignore)
+  (leaf leaf-keywords
+    :ensure t
+    :config
+    ;; initialize leaf-keywords.el
+    (leaf-keywords-init)))
+;; Taken from readme
 
-    (setq custom-file (locate-user-emacs-file "custom-vars.el"))
-    (load custom-file 'noerror 'nomessage)
-    (setq backup-directory-alist '(("." . "~/.config/emacs/backup/")
-				   version-control t))
-    (setq create-lockfiles nil)
+(leaf modern-cpp-font-lock
 
+  :ensure t
+  :hook (c++-mode-hook))
 
-    (require 'package)
+(leaf nim-mode
+  :ensure t)
 
-    (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			     ("elpa" . "https://elpa.gnu.org/packages/")
-			     ("nongnu". "https://elpa.nongnu.org/nongnu/")))
+(add-to-list 'load-path "~/.config/emacs/packages/")
+(load-file "~/.config/emacs/packages/hare-mode/hare-mode.el")
 
-    (unless (package-installed-p 'use-package)
-      (package-refresh-contents)
-      (package-install 'use-package))
-    (eval-and-compile
-      (setq use-package-always-ensure t
-	    use-package-expand-minimally t))
+(leaf corfu
+  :ensure t
+  :custom ((corfu-cycle . t)
+          (corfu-auto . t)
+          (corfu-preselect . 'prompt)
+          (corfu-quit-no-match . 'separator))
+  :init (global-corfu-mode))
 
-    (use-package modern-cpp-font-lock
-      :hook
-      (c++-mode . modern-c++-font-lock-mode))
+(leaf cape
+  :ensure t
+  :init
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-keyword))
+(setq-local completion-at-point-functions
+    	(mapcar #'cape-company-to-capf
+		(list #'company-etags)))
 
-     (add-to-list 'load-path "~/.config/emacs/packages")
-     (require 'c3-mode)
-     (add-to-list 'auto-mode-alist '("\\.c3\\'" . c3-mode))
-     (add-to-list 'auto-mode-alist '("\\.c3l\\'" . c3-mode))
+(leaf ctrlf
+  :ensure t
+  :init (ctrlf-mode))
 
-    (use-package nim-mode)
+(leaf vertico
+  :ensure t
+  :init (vertico-mode))
 
-    (use-package corfu
-      :custom
-      (corfu-cycle t)
-      (corfu-auto t)
-      (corfu-preselect 'prompt)
-      (corfu-quit-no-match 'separator)
-      :init
-      (global-corfu-mode))
+(leaf marginalia
+  :ensure t
+  :init (marginalia-mode))
 
-    (use-package cape
-      :init
-      (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-      (add-to-list 'completion-at-point-functions #'cape-file)
-      (add-to-list 'completion-at-point-functions #'cape-keyword))
-    (setq-local completion-at-point-functions
-		(mapcar #'cape-company-to-capf
-			(list #'company-etags)))
+(leaf orderless
+  :ensure t
+  :init
+  (setq completion-styles '(orderless basic)
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles partial-completion)))))
 
-    (use-package vertico
-      :init
-      (vertico-mode))
+(leaf consult
+  :ensure t
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+  :init (setq xref-show-xrefs-function #'consult-xref
+    	  xref-show-definitions-function #'consult-xref)
+  :bind
+  ([remap switch-to-buffer] . consult-buffer)
+  ([remap goto-line] . consult-goto-line)
+  ([remap man] . consult-man)
+  )
 
-    (use-package marginalia
-      :init
-      (marginalia-mode))
+(leaf helpful
+  :ensure t
+  :custom
+  (counsel-describe-function-function #'helpful-callable)
+  (counsel-describe-variable-function #'helpful-variable)
+  :bind
+  ([remap describe-function] . helpful-function)
+  ([remap describe-command] . helpful-command)
+  ([remap describe-variable] . helpful-variable)
+  ([remap describe-key] . helpful-key))
 
-    (use-package orderless
-      :init
-      (setq completion-styles '(orderless basic)
-	    completion-category-defaults nil
-	    completion-category-overrides '((file (styles partial-completion)))))
+(leaf magit
+  :ensure t
+  :config
+  (setq transient-default-level 5))
 
-    (use-package consult
-      :hook (completion-list-mode . consult-preview-at-point-mode)
-      :init (setq xref-show-xrefs-function #'consult-xref
-		  xref-show-definitions-function #'consult-xref)
-      :bind
-      ([remap isearch-forward] . consult-line)
-      ([remap switch-to-buffer] . consult-buffer)
-      ([remap goto-line] . consult-goto-line)
-      ([remap man] . consult-man)
-      )
+(leaf eat
+  :ensure t)
 
-    (use-package helpful
-      :custom
-      (counsel-describe-function-function #'helpful-callable)
-      (counsel-describe-variable-function #'helpful-variable)
-      :bind
-      ([remap describe-function] . helpful-function)
-      ([remap describe-command] . helpful-command)
-      ([remap describe-variable] . helpful-variable)
-      ([remap describe-key] . helpful-key))
+(leaf org-journal
+  :ensure t)
+(leaf ox-pandoc
+  :ensure t)
+(leaf pdf-tools
+  :ensure t)
+(setq
+ org-auto-align-tags nil
+ org-tags-column 0
+ org-catch-invisible-edits 'show-and-error
+ org-insert-heading-respect-content t
+ org-hide-emphasis-markers t
+ org-pretty-entities t
+)
 
-    (use-package magit
-      :config
-      (setq transient-default-level 5))
+(load-file "~/.config/emacs/private.el")
+(leaf circe)
+(setq circe-network-options
+      '(("Libera Chat"
+         :tls t
+         :nick "raynei"
+         :sasl-username "raynei"
+         :sasl-password libera-password
+         :channels ("#emacs")
+         )))
 
-  (use-package eat)
+(require 'mu4e)
+(setq user-mail-address "emacs.raynei@gmail.com")
+(setq mu4e-get-mail-command "mbsync gmail")
+(setq
+ mu4e-sent-folder "/Gmail/[gmail].sent"
+ mu4e-drafts-folder "/Gmail/[gmail].drafts"
+ mu4e-trash-folder "/Gmail/[gmail].trash"
+ mu4e-refile-folder "/Gmail/[gmail].important"
+ mu4e-get-mail-command "offlineimap"
+ mu4e-update-interval 1200
+)
 
-  (use-package org-journal)
-  (use-package ox-pandoc)
-  (use-package pdf-tools)
-  (setq
-     org-auto-align-tags nil
-     org-tags-column 0
-     org-catch-invisible-edits 'show-and-error
-     org-insert-heading-respect-content t
-     org-hide-emphasis-markers t
-     org-pretty-entities t
-     )
-
-    (load-file "~/.config/emacs/private.el")
-    (use-package circe)
-    (setq circe-network-options
-	  '(("Libera Chat"
-	     :tls t
-	     :nick "raynei"
-	     :sasl-username "raynei"
-	     :sasl-password libera-password
-	     :channels ("#emacs")
-	     )))
-
-    (use-package multiple-cursors)
-    (global-set-key (kbd "C-S-c") 'mc/edit-lines)
-
-    (setq
-     mu4e-sent-folder "/Gmail/[gmail].sent"
-     mu4e-drafts-folder "/Gmail/[gmail].drafts"
-     mu4e-trash-folder "/Gmail/[gmail].trash"
-     mu4e-refile-folder "/Gmail/[gmail].important"
-     mu4e-get-mail-command "offlineimap"
-     mu4e-update-interval 1200
-     )
-
-    ;; Dictionary buffer should behave
-    (setq switch-to-buffer-obey-display-actions t)
-    (add-to-list 'display-buffer-alist
-     '("^\\*Dictionary\\*" display-buffer-in-side-window
-       (side . bottom)
-       (window-width . 50)))
+;; Dictionary buffer should behave
+(setq switch-to-buffer-obey-display-actions t)
+(add-to-list 'display-buffer-alist
+ '("^\\*Dictionary\\*" display-buffer-in-side-window
+   (side . bottom)
+   (window-width . 50)))
 #+end_src

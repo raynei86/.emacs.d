@@ -161,4 +161,6 @@ As an emacs hacker, I only use the coolest l33t hacker font.
  '("^\\*Dictionary\\*" display-buffer-in-side-window
    (side . bottom)
    (window-width . 50)))
+
+(electric-pair-mode)
 #+end_src
